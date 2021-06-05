@@ -36,13 +36,12 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 init(SENTRY_SDK, traces_sample_rate=1.0)
 
-
 delete_btn = types.InlineKeyboardMarkup(resize_keyboard=True, selective=True)
 # delete_btn.insert(InlineKeyboardButton(text='👍', callback_data='vote'))
 delete_btn.insert(InlineKeyboardButton(text='🗑️', callback_data='delete'))
 
-# 定义函数
 
+# 定义函数
 
 
 @dp.callback_query_handler(text='delete')
@@ -50,7 +49,7 @@ async def _(call: types.CallbackQuery):
     await call.message.delete()
     await call.answer(text="该消息已删除")
 
-    
+
 def translate_text(text, lang='zh-CN', detect=1, type=0):
     if type == 0:  # Specific language
         translated_cleaned = output(trans(text, lang))
@@ -272,8 +271,8 @@ async def query_translate(call: types.CallbackQuery):
     # await bot.send_chat_action(message.chat.id, action="typing")
     await call.answer(text="消息已翻译 Message translated")
     await bot.edit_message_text("`" + call.message.text.split('▸')[0] + "`" + \
-        output(trans_auto(translated_msg)), call.message.chat.id, call.message.message_id,
-        parse_mode="markdown")
+                                output(trans_auto(translated_msg)), call.message.chat.id, call.message.message_id,
+                                parse_mode="markdown")
 
 
 @dp.callback_query_handler(text=['zh', 'en', 'ja', 'ru', 'vi'])
@@ -334,31 +333,32 @@ async def text_translate(message: types.Message):
     chat_id = message.chat.id
     action_btn = types.InlineKeyboardMarkup(resize_keyboard=True,
                                             selective=True)
-
+    print("testtt")
     action_btn.insert(
         InlineKeyboardButton(text='🇨🇳🇺🇸🇯🇵', callback_data='select'))
     action_btn.insert(InlineKeyboardButton(text='🗑️', callback_data='del'))
-    if chat_type == 'private':
-        
-        await bot.send_chat_action(message.chat.id, action="typing")
-        capture_message(
-            f'[{chat_type}, @{message.from_user.id}, #{message.from_user.first_name}] {message.text} '
-        )
-        result = translate_text(message.text)
-        await message.reply(result, disable_notification=True)
-    elif ((chat_type == 'group') or
-          (chat_type == 'supergroup')) and (str(chat_id) in GROUP_LIST):
-        cprint(f"{chat_id} 自动翻译 {message.text}", 'white', 'on_cyan')
-        capture_message(
-            f'[{chat_type}, @{message.from_user.id}, #{message.from_user.first_name}] {message.text} '
-        )
-        await bot.send_chat_action(message.chat.id, action="typing")
-        result = output(trans_auto(message.text))
-        await message.reply( result, parse_mode='markdown', disable_notification=True,
-                             disable_web_page_preview=True, reply_markup=action_btn)
-    else:  # 过滤所有群聊、频道
-        # print(str(message.chat.id) in GROUP_LIST)
-        pass
+    # if chat_type == 'private':
+
+    await bot.send_chat_action(message.chat.id, action="typing")
+    capture_message(
+        f'[{chat_type}, @{message.from_user.id}, #{message.from_user.first_name}] {message.text} '
+    )
+    result = translate_text(message.text)
+    await message.reply(result, disable_notification=True)
+
+# elif ((chat_type == 'group') or
+#       (chat_type == 'supergroup')) and (str(chat_id) in GROUP_LIST):
+#     cprint(f"{chat_id} 自动翻译 {message.text}", 'white', 'on_cyan')
+#     capture_message(
+#         f'[{chat_type}, @{message.from_user.id}, #{message.from_user.first_name}] {message.text} '
+#     )
+#     await bot.send_chat_action(message.chat.id, action="typing")
+#     result = output(trans_auto(message.text))
+#     await message.reply(result, parse_mode='markdown', disable_notification=True,
+#                         disable_web_page_preview=True, reply_markup=action_btn)
+#     else:  # 过滤所有群聊、频道
+# print(str(message.chat.id) in GROUP_LIST)
+#     pass
 
 
 @dp.message_handler()
@@ -385,6 +385,7 @@ async def inline(inline_query: InlineQuery):
     user = inline_query.from_user.username
     user_id = inline_query.from_user.id
     end_str = ''
+    print("text::" + text)
     if len(text) >= 256:
         end_str = '\n\n(达到长度限制，请私聊翻译全文）'
     if text == '输入以翻译 Input to Translate...':
