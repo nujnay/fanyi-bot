@@ -51,12 +51,12 @@ async def _(call: types.CallbackQuery):
 
 
 def translate_text(text, lang='zh-CN', detect=1, type=0):
-    if type == 0:  # Specific language
-        translated_cleaned = output(trans(text, lang))
-    elif type == 1:  # Auto Translation
-        translated_cleaned = output(trans_auto(text))
-    else:  # To Chinese
-        translated_cleaned = output(trans(text, lang))
+    # if type == 0:  # Specific language
+    #     translated_cleaned = output(trans(text, lang))
+    # elif type == 1:  # Auto Translation
+    translated_cleaned = output(trans_auto(text))
+    # else:  # To Chinese
+    #     translated_cleaned = output(trans(text, lang))
     if STAT:
         try:
             stathat = StatHat()

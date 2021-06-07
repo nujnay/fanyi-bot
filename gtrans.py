@@ -59,24 +59,31 @@ def trans(text, lang='zh-CN', detect=1):
     else:
         if get_lang(text)[0] == 'zh-CN':
             result = get_trans(text, lang_tgt='zh-CN') + '\n' \
-                + get_trans(text, lang_tgt='en')
+                     + get_trans(text, lang_tgt='en')
         else:
             result = get_trans(text, lang_tgt='zh-CN') + '\n' \
-                + text
+                     + text
     return result
 
 
 def trans_auto(text):
+    global resultNow
     text = clean_text(text)
     tr = google_translator()
     if get_lang(text)[0] == 'zh-CN':
-        result = get_trans(text, lang_tgt='en')
+        resultNow = get_trans(text, lang_tgt='en')
     elif get_lang(text)[0] == 'en':
-        result = get_trans(text, lang_tgt='zh-CN')
+        resultNow = get_trans(text, lang_tgt='zh-CN')
     else:
-        result = get_trans(text, lang_tgt='zh-CN') + '\n\n' + get_trans(
-            text, lang_tgt='en')
-    return result
+        zh = get_trans(text, lang_tgt='zh-CN')
+        en = get_trans(text, lang_tgt='en')
+        if zh == text:
+            resultNow = get_trans(text, lang_tgt='en')
+            print("resultNow1;" + resultNow)
+        if en == text:
+            resultNow = get_trans(text, lang_tgt='zh-CN')
+            print("resultNow2;" + resultNow)
+    return resultNow
 
 
 def get_lang(text):
